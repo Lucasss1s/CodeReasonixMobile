@@ -6,9 +6,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.codereasonix.adapter.DesafioAdapter;
@@ -29,33 +33,58 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
+    // Ids menu
+    private static final int MENU_PERFIL = 1;
+    private static final int MENU_MIS_DESAFIOS = 2;
+    private static final int MENU_LOGOUT = 3;
+
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView recyclerDesafios;
     private DesafioAdapter adapter;
     private final List<Desafio> listaDesafios = new ArrayList<>();
 
     private Button btnMisDesafios;
+    private TextView txtWelcome;
+    private ImageButton btnMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        btnMisDesafios = findViewById(R.id.btnMisDesafios);
-        if (btnMisDesafios != null) {
-            btnMisDesafios.setOnClickListener(v ->
-                    startActivity(new Intent(HomeActivity.this, MisDesafiosActivity.class))
-            );
-        }
-
+        //Ui
+        txtWelcome = findViewById(R.id.txtWelcome);
+        btnMenu = findViewById(R.id.btnMenu);
         swipeRefresh = findViewById(R.id.swipeRefresh);
-
         recyclerDesafios = findViewById(R.id.recyclerDesafios);
         if (recyclerDesafios == null) {
             recyclerDesafios = findViewById(R.id.recyclerPreguntas);
         }
-        recyclerDesafios.setLayoutManager(new LinearLayoutManager(this));
 
+        // Mensaje prefs
+        SharedPreferences prefs = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
+        String nombreUsuario = prefs.getString("nombre_usuario", "");
+
+        String mensaje = "Bienvenido a CodeReasonix";
+        if (!nombreUsuario.isEmpty()) {
+            mensaje += ", " + nombreUsuario;
+        }
+        txtWelcome.setText(mensaje);
+
+        //Menu hamburguesa
+        btnMenu.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(HomeActivity.this, v);
+
+            popup.getMenu().add(0, MENU_PERFIL, 0, "Perfil");
+            popup.getMenu().add(0, MENU_MIS_DESAFIOS, 1, "Mis desafíos");
+            popup.getMenu().add(0, MENU_LOGOUT, 2, "Cerrar sesión");
+
+            popup.setOnMenuItemClickListener(item -> onMenuItemSelected(item));
+            popup.show();
+        });
+
+        //Desafios
+        recyclerDesafios.setLayoutManager(new LinearLayoutManager(this));
         adapter = new DesafioAdapter(listaDesafios, desafio -> {
             int id = desafio.getIdDesafio();
             if (id <= 0) {
@@ -73,6 +102,27 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         cargarDesafios();
+    }
+
+    private boolean onMenuItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == MENU_PERFIL) {
+            Intent intent = new Intent(HomeActivity.this, PerfilActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == MENU_MIS_DESAFIOS) {
+            Intent intent = new Intent(HomeActivity.this, MisDesafiosActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == MENU_LOGOUT) {
+            SharedPreferences prefs1 = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
+            prefs1.edit().clear().apply();
+            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+        return false;
     }
 
     @Override

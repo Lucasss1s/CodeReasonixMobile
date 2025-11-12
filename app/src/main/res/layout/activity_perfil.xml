@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0f1220"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--Banner header-->
+        <FrameLayout
+            android:id="@+id/headerPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/imgBanner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="#151a29" />
+        </FrameLayout>
+
+        <!--Avatar -->
+        <ImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="-70dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/avatar_circle_bg"
+            android:padding="2dp"
+            android:scaleType="centerCrop" />
+
+        <!-- Datos user -->
+        <TextView
+            android:id="@+id/txtTituloPerfil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mi perfil"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/txtNombreUsuario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre"
+            android:textColor="#e6ebff"
+            android:textSize="16sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/txtUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@usuario"
+            android:layout_marginStart="10dp"
+            android:textColor="#9aa7c7"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/txtEmailUsuario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="email@ej.com"
+            android:textColor="#9aa7c7"
+            android:textSize="14sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="12dp" />
+
+        <!--Gamificacion -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Progreso"
+            android:textColor="#ffb26f"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nivel"
+                    android:textColor="#9aa7c7"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/txtNivel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="XP total"
+                    android:textColor="#9aa7c7"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/txtXpTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Racha"
+                    android:textColor="#9aa7c7"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/txtRacha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔥 0"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressNivel"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:progress="0"
+            android:max="100"
+            android:progressTint="#ff7a00"
+            android:backgroundTint="#1e2740" />
+
+        <TextView
+            android:id="@+id/txtProgresoDetalle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0 / 100 XP"
+            android:textColor="#9aa7c7"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp" />
+
+        <!--Biografia-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Biografía"
+            android:textColor="#ffb26f"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/editBiografia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Contanos en qué estás trabajando y qué te interesa..."
+            android:textColor="#e6ebff"
+            android:textColorHint="#6b7280"
+            android:background="#0b1020"
+            android:padding="10dp"
+            android:minHeight="80dp"
+            android:maxLines="6"
+            android:gravity="top"
+            android:textSize="14sp" />
+
+        <!--skills -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Skills"
+            android:textColor="#ffb26f"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/editSkills"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ej: JavaScript, React, SQL, Arduino"
+            android:textColor="#e6ebff"
+            android:textColorHint="#6b7280"
+            android:background="#0b1020"
+            android:padding="10dp"
+            android:textSize="14sp" />
+
+        <!--Redes -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Redes sociales"
+            android:textColor="#ffb26f"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/editRedes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Pegá links, uno por línea o separados por coma"
+            android:textColor="#e6ebff"
+            android:textColorHint="#6b7280"
+            android:background="#0b1020"
+            android:padding="10dp"
+            android:minHeight="60dp"
+            android:gravity="top"
+            android:textSize="14sp" />
+
+        <!--Btn guardar -->
+        <LinearLayout
+            android:id="@+id/layoutGuardarPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="8dp"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/btnGuardarPerfil"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Guardar cambios"
+                android:src="@android:drawable/ic_menu_save"
+                android:tint="#ffb26f" />
+        </LinearLayout>
+
+        <!--logros-->
+        <TextView
+            android:id="@+id/txtTituloLogros"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logros"
+            android:textColor="#ffb26f"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="4dp" />
+
+        <!--Btn ver mas-->
+        <TextView
+            android:id="@+id/btnToggleLogros"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ver todos"
+            android:textColor="#60a5fa"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerLogros"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+
+    </LinearLayout>
+</ScrollView>

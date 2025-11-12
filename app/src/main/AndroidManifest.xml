@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.codereasonix">
 
-    <!-- Permiso de Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -17,8 +16,18 @@
         android:theme="@style/Theme.CodeReasonix"
         android:usesCleartextTraffic="true">
 
+        <activity
+            android:name=".DesafioDetalleActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MisDesafiosActivity"
+            android:exported="false" />
+
         <activity android:name=".HomeActivity" />
+
         <activity android:name=".RegisterActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#1A1A2E"
+    android:padding="16dp"
+    android:layout_marginBottom="14dp">
+
+    <ImageView
+        android:id="@+id/imgThumb"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/app_name"
+        android:background="#222"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/txtTituloMi"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nombre del desafío"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/imgThumb"
+        app:layout_constraintStart_toEndOf="@id/imgThumb"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="12dp"/>
+
+    <TextView
+        android:id="@+id/txtStats"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Daño: 0   •   Aciertos: 0"
+        android:textColor="#CCCCCC"
+        android:textSize="13sp"
+        app:layout_constraintTop_toBottomOf="@id/txtTituloMi"
+        app:layout_constraintStart_toStartOf="@id/txtTituloMi"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:id="@+id/txtRecompensaMi"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Recompensa: 100 XP • 25 monedas"
+        android:textColor="#00BFA6"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        app:layout_constraintTop_toBottomOf="@id/txtStats"
+        app:layout_constraintStart_toStartOf="@id/txtTituloMi"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/txtEstadoMi"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Estado: activo"
+        android:textColor="#FFD166"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        app:layout_constraintTop_toBottomOf="@id/txtRecompensaMi"
+        app:layout_constraintStart_toStartOf="@id/txtTituloMi"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="6dp"/>
+
+    <Button
+        android:id="@+id/btnAccionMi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ir al desafío"
+        android:backgroundTint="#3949ab"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/txtEstadoMi"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"/>
+
+    <ProgressBar
+        android:id="@+id/claimingBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/btnAccionMi"
+        app:layout_constraintBottom_toBottomOf="@id/btnAccionMi"
+        android:layout_marginEnd="8dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

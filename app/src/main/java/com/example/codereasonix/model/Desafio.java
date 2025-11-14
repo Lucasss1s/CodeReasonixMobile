@@ -6,6 +6,8 @@ public class Desafio {
     private int idDesafio;
     private String nombre, descripcion, imagenUrl, estado;
     private int hpTotal, hpRestante, recompensaXp, recompensaMoneda;
+    private String dificultad;
+    private String lenguaje;
 
     public Desafio(JSONObject obj) {
         idDesafio = obj.optInt("id_desafio");
@@ -17,8 +19,9 @@ public class Desafio {
         hpRestante = obj.isNull("hp_restante") ? hpTotal : obj.optInt("hp_restante", hpTotal);
         recompensaXp = obj.optInt("recompensa_xp");
         recompensaMoneda = obj.optInt("recompensa_moneda");
+        dificultad = obj.optString("dificultad", null);
+        lenguaje   = obj.optString("lenguaje", null);
     }
-
 
     public int getIdDesafio() { return idDesafio; }
     public String getNombre() { return nombre; }
@@ -29,4 +32,6 @@ public class Desafio {
     public String getEstado() { return estado; }
     public int getRecompensaXp() { return recompensaXp; }
     public int getRecompensaMoneda() { return recompensaMoneda; }
+    public String getDificultad() { return dificultad; }
+    public String getLenguaje()   { return lenguaje; }
 }

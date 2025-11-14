@@ -101,6 +101,8 @@ public class MisDesafiosActivity extends AppCompatActivity {
         int danoTotal;
         int aciertos;
         String imagenUrl;
+        String dificultad;
+        String lenguaje;
 
         static Participacion fromJson(JSONObject row) {
             try {
@@ -117,7 +119,10 @@ public class MisDesafiosActivity extends AppCompatActivity {
                 p.estado = d.optString("estado", "activo");
                 p.recompensaXp = d.optInt("recompensa_xp", 0);
                 p.recompensaMoneda = d.optInt("recompensa_moneda", 0);
-                p.imagenUrl = d.optString("imagen_url", ""); // <-- tomado del backend
+                p.imagenUrl = d.optString("imagen_url", "");
+                p.dificultad = d.optString("dificultad", null);
+                p.lenguaje   = d.optString("lenguaje", null);
+
                 return p;
             } catch (Exception e) {
                 return null;
@@ -135,18 +140,44 @@ public class MisDesafiosActivity extends AppCompatActivity {
         class VH extends RecyclerView.ViewHolder {
             ImageView imgThumb;
             TextView txtTitulo, txtStats, txtRecompensa, txtEstado;
+            TextView txtDificultadMi, txtLenguajeMi;
             Button btnAccion;
             ProgressBar claimingBar;
 
             VH(View v) {
                 super(v);
-                imgThumb     = v.findViewById(R.id.imgThumb);
+                imgThumb      = v.findViewById(R.id.imgThumb);
                 txtTitulo     = v.findViewById(R.id.txtTituloMi);
                 txtStats      = v.findViewById(R.id.txtStats);
                 txtRecompensa = v.findViewById(R.id.txtRecompensaMi);
                 txtEstado     = v.findViewById(R.id.txtEstadoMi);
                 btnAccion     = v.findViewById(R.id.btnAccionMi);
                 claimingBar   = v.findViewById(R.id.claimingBar);
+
+                txtDificultadMi = v.findViewById(R.id.txtDificultadMi);
+                txtLenguajeMi   = v.findViewById(R.id.txtLenguajeMi);
+            }
+        }
+
+        private String formatDificultad(String dif) {
+            if (dif == null || dif.isEmpty()) return "Sin dificultad";
+            switch (dif.toLowerCase()) {
+                case "facil": return "Fácil";
+                case "intermedio": return "Intermedio";
+                case "dificil": return "Difícil";
+                case "experto": return "Experto";
+                default: return dif;
+            }
+        }
+
+        private String formatLenguaje(String lang) {
+            if (lang == null || lang.isEmpty()) return "Sin lenguaje";
+            switch (lang.toLowerCase()) {
+                case "java": return "Java";
+                case "python": return "Python";
+                case "javascript": return "JavaScript";
+                case "php": return "PHP";
+                default: return lang;
             }
         }
 
@@ -168,7 +199,20 @@ public class MisDesafiosActivity extends AppCompatActivity {
 
             h.txtTitulo.setText(p.nombre);
             h.txtStats.setText("Daño: " + p.danoTotal + "   •   Aciertos: " + p.aciertos);
-            h.txtRecompensa.setText("Recompensa: " + p.recompensaXp + " XP • " + p.recompensaMoneda + " monedas");
+
+            int verde = android.graphics.Color.parseColor("#00BFA6");
+            if (h.txtDificultadMi != null) {
+                h.txtDificultadMi.setText(formatDificultad(p.dificultad));
+                h.txtDificultadMi.setTextColor(verde);
+            }
+            if (h.txtLenguajeMi != null) {
+                h.txtLenguajeMi.setText(formatLenguaje(p.lenguaje));
+                h.txtLenguajeMi.setTextColor(verde);
+            }
+
+            h.txtRecompensa.setText(
+                    "Recompensa: " + p.recompensaXp + " XP • " + p.recompensaMoneda + " monedas"
+            );
             h.txtEstado.setText("Estado: " + p.estado);
 
             h.btnAccion.setEnabled(true);

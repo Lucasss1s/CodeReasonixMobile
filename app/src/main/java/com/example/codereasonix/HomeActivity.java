@@ -8,10 +8,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,32 +30,31 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    // Ids menu
     private static final int MENU_PERFIL = 1;
     private static final int MENU_MIS_DESAFIOS = 2;
     private static final int MENU_LOGOUT = 3;
-
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView recyclerDesafios;
     private DesafioAdapter adapter;
     private final List<Desafio> listaDesafios = new ArrayList<>();
-
-    private Button btnMisDesafios;
     private TextView txtWelcome;
     private ImageButton btnMenu;
+    private Spinner spDificultad, spLenguaje;
+    private String selectedDificultad = "";
+    private String selectedLenguaje  = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //Ui
         txtWelcome = findViewById(R.id.txtWelcome);
         btnMenu = findViewById(R.id.btnMenu);
         swipeRefresh = findViewById(R.id.swipeRefresh);
@@ -61,7 +63,9 @@ public class HomeActivity extends AppCompatActivity {
             recyclerDesafios = findViewById(R.id.recyclerPreguntas);
         }
 
-        // Mensaje prefs
+        spDificultad = findViewById(R.id.spDificultad);
+        spLenguaje   = findViewById(R.id.spLenguaje);
+
         SharedPreferences prefs = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
         String nombreUsuario = prefs.getString("nombre_usuario", "");
 
@@ -71,7 +75,6 @@ public class HomeActivity extends AppCompatActivity {
         }
         txtWelcome.setText(mensaje);
 
-        //Menu hamburguesa
         btnMenu.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(HomeActivity.this, v);
 
@@ -79,11 +82,10 @@ public class HomeActivity extends AppCompatActivity {
             popup.getMenu().add(0, MENU_MIS_DESAFIOS, 1, "Mis desafíos");
             popup.getMenu().add(0, MENU_LOGOUT, 2, "Cerrar sesión");
 
-            popup.setOnMenuItemClickListener(item -> onMenuItemSelected(item));
+            popup.setOnMenuItemClickListener(this::onMenuItemSelected);
             popup.show();
         });
 
-        //Desafios
         recyclerDesafios.setLayoutManager(new LinearLayoutManager(this));
         adapter = new DesafioAdapter(listaDesafios, desafio -> {
             int id = desafio.getIdDesafio();
@@ -101,7 +103,75 @@ public class HomeActivity extends AppCompatActivity {
             swipeRefresh.setOnRefreshListener(this::cargarDesafios);
         }
 
+        configurarSpinnersFiltros();
+
         cargarDesafios();
+    }
+
+    private void configurarSpinnersFiltros() {
+        final int VERDE = android.graphics.Color.parseColor("#00BFA6");
+
+        if (spDificultad != null) {
+            final String[] labelsDif = {"Todas", "Fácil", "Intermedio", "Difícil", "Experto"};
+            final String[] valuesDif = {"", "facil", "intermedio", "dificil", "experto"};
+
+            ArrayAdapter<String> difAdapter = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_spinner_item,
+                    labelsDif
+            );
+            difAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spDificultad.setAdapter(difAdapter);
+
+            spDificultad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
+                    selectedDificultad = valuesDif[position];
+
+                    if (view instanceof TextView) {
+                        ((TextView) view).setTextColor(VERDE);
+                    }
+
+                    cargarDesafios();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Nada
+                }
+            });
+        }
+
+        if (spLenguaje != null) {
+            final String[] labelsLang = {"Todos", "Java", "Python", "JavaScript", "PHP"};
+            final String[] valuesLang = {"", "java", "python", "javascript", "php"};
+
+            ArrayAdapter<String> langAdapter = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_spinner_item,
+                    labelsLang
+            );
+            langAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spLenguaje.setAdapter(langAdapter);
+
+            spLenguaje.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
+                    selectedLenguaje = valuesLang[position];
+
+                    if (view instanceof TextView) {
+                        ((TextView) view).setTextColor(VERDE);
+                    }
+
+                    cargarDesafios();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Nada
+                }
+            });
+        }
     }
 
     private boolean onMenuItemSelected(MenuItem item) {
@@ -136,12 +206,35 @@ public class HomeActivity extends AppCompatActivity {
         runOnUiThread(() -> swipeRefresh.setRefreshing(refreshing));
     }
 
+    private String buildDesafiosUrl() {
+        try {
+            String base = Config.BASE_URL + "/desafios";
+            List<String> params = new ArrayList<>();
+
+            if (!TextUtils.isEmpty(selectedDificultad)) {
+                params.add("dificultad=" + URLEncoder.encode(selectedDificultad, "UTF-8"));
+            }
+            if (!TextUtils.isEmpty(selectedLenguaje)) {
+                params.add("lenguaje=" + URLEncoder.encode(selectedLenguaje, "UTF-8"));
+            }
+
+            if (params.isEmpty()) {
+                return base;
+            } else {
+                return base + "?" + TextUtils.join("&", params);
+            }
+        } catch (Exception e) {
+            return Config.BASE_URL + "/desafios";
+        }
+    }
+
     private void cargarDesafios() {
         setRefreshing(true);
         new Thread(() -> {
             HttpURLConnection conexion = null;
             try {
-                URL url = new URL(Config.BASE_URL + "/desafios");
+                String urlStr = buildDesafiosUrl();
+                URL url = new URL(urlStr);
                 conexion = (HttpURLConnection) url.openConnection();
                 conexion.setRequestMethod("GET");
                 conexion.connect();

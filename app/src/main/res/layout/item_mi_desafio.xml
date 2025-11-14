@@ -32,13 +32,36 @@
         android:layout_marginStart="12dp"/>
 
     <TextView
+        android:id="@+id/txtDificultadMi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Intermedio"
+        android:textColor="#00BFA6"
+        android:textSize="12sp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/txtTituloMi"
+        app:layout_constraintStart_toStartOf="@id/txtTituloMi" />
+
+    <TextView
+        android:id="@+id/txtLenguajeMi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Java"
+        android:textColor="#00BFA6"
+        android:textSize="12sp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/txtTituloMi"
+        app:layout_constraintStart_toEndOf="@id/txtDificultadMi" />
+
+    <TextView
         android:id="@+id/txtStats"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Daño: 0   •   Aciertos: 0"
         android:textColor="#CCCCCC"
         android:textSize="13sp"
-        app:layout_constraintTop_toBottomOf="@id/txtTituloMi"
+        app:layout_constraintTop_toBottomOf="@id/txtDificultadMi"
         app:layout_constraintStart_toStartOf="@id/txtTituloMi"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="4dp"/>
@@ -74,8 +97,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ir al desafío"
-        android:backgroundTint="#3949ab"
-        android:textColor="#FFFFFF"
+        android:textAllCaps="false"
+        android:backgroundTint="#00BFA6"
+        android:textColor="#111111"
         app:layout_constraintTop_toBottomOf="@id/txtEstadoMi"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="12dp"/>

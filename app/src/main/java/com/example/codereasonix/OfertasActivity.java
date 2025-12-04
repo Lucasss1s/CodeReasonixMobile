@@ -1,6 +1,5 @@
 package com.example.codereasonix;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OfertasActivity extends AppCompatActivity {
+public class OfertasActivity extends BaseActivity {
 
     private RecyclerView recyclerOfertas;
     private ProgressBar progressOfertas;
@@ -38,6 +37,9 @@ public class OfertasActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ofertas);
+
+        setupTopBar();
+        setupBottomNav();
 
         recyclerOfertas = findViewById(R.id.recyclerOfertas);
         progressOfertas = findViewById(R.id.progressOfertas);

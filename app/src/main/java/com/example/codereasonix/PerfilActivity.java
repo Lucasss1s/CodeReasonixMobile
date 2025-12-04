@@ -1,6 +1,5 @@
 package com.example.codereasonix;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +20,6 @@ import com.example.codereasonix.adapter.LogroAdapter;
 import com.example.codereasonix.model.Logro;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -35,7 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PerfilActivity extends AppCompatActivity {
+public class PerfilActivity extends BaseActivity {
 
     private ImageView imgBanner, imgAvatar;
     private TextView txtTituloPerfil, txtNombreUsuario, txtUsername, txtEmailUsuario;
@@ -46,6 +44,7 @@ public class PerfilActivity extends AppCompatActivity {
     private ImageButton btnGuardarPerfil;
     private RecyclerView recyclerLogros;
     private TextView btnToggleLogros;
+
     private final List<Logro> listaLogrosTodas = new ArrayList<>();
     private final List<Logro> listaLogrosVisibles = new ArrayList<>();
     private LogroAdapter logroAdapter;
@@ -60,6 +59,9 @@ public class PerfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
+        setupTopBar();
+        setupBottomNav();
+
         SharedPreferences prefs = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
         idCliente = prefs.getInt("id_cliente", -1);
 
@@ -69,27 +71,26 @@ public class PerfilActivity extends AppCompatActivity {
             return;
         }
 
-        // Refer Ui
         imgBanner = findViewById(R.id.imgBanner);
         imgAvatar = findViewById(R.id.imgAvatar);
 
-        txtTituloPerfil = findViewById(R.id.txtTituloPerfil);
-        txtNombreUsuario = findViewById(R.id.txtNombreUsuario);
-        txtUsername = findViewById(R.id.txtUsername);
-        txtEmailUsuario = findViewById(R.id.txtEmailUsuario);
+        txtTituloPerfil   = findViewById(R.id.txtTituloPerfil);
+        txtNombreUsuario  = findViewById(R.id.txtNombreUsuario);
+        txtUsername       = findViewById(R.id.txtUsername);
+        txtEmailUsuario   = findViewById(R.id.txtEmailUsuario);
 
-        txtNivel = findViewById(R.id.txtNivel);
-        txtXpTotal = findViewById(R.id.txtXpTotal);
-        txtRacha = findViewById(R.id.txtRacha);
+        txtNivel          = findViewById(R.id.txtNivel);
+        txtXpTotal        = findViewById(R.id.txtXpTotal);
+        txtRacha          = findViewById(R.id.txtRacha);
         txtProgresoDetalle = findViewById(R.id.txtProgresoDetalle);
 
         editBiografia = findViewById(R.id.editBiografia);
-        editSkills = findViewById(R.id.editSkills);
-        editRedes = findViewById(R.id.editRedes);
+        editSkills    = findViewById(R.id.editSkills);
+        editRedes     = findViewById(R.id.editRedes);
 
-        progressNivel = findViewById(R.id.progressNivel);
+        progressNivel       = findViewById(R.id.progressNivel);
         layoutGuardarPerfil = findViewById(R.id.layoutGuardarPerfil);
-        btnGuardarPerfil = findViewById(R.id.btnGuardarPerfil);
+        btnGuardarPerfil    = findViewById(R.id.btnGuardarPerfil);
 
         recyclerLogros = findViewById(R.id.recyclerLogros);
         btnToggleLogros = findViewById(R.id.btnToggleLogros);
@@ -105,7 +106,6 @@ public class PerfilActivity extends AppCompatActivity {
             actualizarLogrosVisibles();
         });
 
-        //Watcher para detectar cambios
         TextWatcher cambiosWatcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -131,25 +131,21 @@ public class PerfilActivity extends AppCompatActivity {
             JSONObject logrosJson = null;
 
             try {
-                //Perfil
                 URL urlPerfil = new URL(Config.BASE_URL + "/perfil/" + idCliente);
                 connPerfil = (HttpURLConnection) urlPerfil.openConnection();
                 connPerfil.setRequestMethod("GET");
                 perfilJson = leerJson(connPerfil);
 
-                //Cliente
                 URL urlUsuario = new URL(Config.BASE_URL + "/usuarios/by-cliente/" + idCliente);
                 connUsuario = (HttpURLConnection) urlUsuario.openConnection();
                 connUsuario.setRequestMethod("GET");
                 usuarioJson = leerJson(connUsuario);
 
-                // Gamificacion
                 URL urlGami = new URL(Config.BASE_URL + "/gamificacion/me/" + idCliente);
                 connGami = (HttpURLConnection) urlGami.openConnection();
                 connGami.setRequestMethod("GET");
                 gamiJson = leerJson(connGami);
 
-                //Logros
                 URL urlLogros = new URL(Config.BASE_URL + "/logros/me/" + idCliente);
                 connLogros = (HttpURLConnection) urlLogros.openConnection();
                 connLogros.setRequestMethod("GET");
@@ -206,7 +202,6 @@ public class PerfilActivity extends AppCompatActivity {
         }
     }
 
-    //Datos usuario
     private void mostrarUsuario(JSONObject usuarioJson) {
         String nombre = usuarioJson.optString("nombre", "");
         String email = usuarioJson.optString("email", "");
@@ -214,23 +209,22 @@ public class PerfilActivity extends AppCompatActivity {
         txtEmailUsuario.setText(email.isEmpty() ? "Sin email" : email);
     }
 
-    //Datos perfil
     private void mostrarPerfil(JSONObject perfilJson) {
-        String biografia = perfilJson.optString("biografia", "");
-        String skills = perfilJson.optString("skills", "");
-        String redes = perfilJson.optString("redes_sociales", "");
+        String biografia   = perfilJson.optString("biografia", "");
+        String skills      = perfilJson.optString("skills", "");
+        String redes       = perfilJson.optString("redes_sociales", "");
         String displayName = perfilJson.optString("display_name", "");
-        String username = perfilJson.optString("username", "");
+        String username    = perfilJson.optString("username", "");
         String fotoPerfilUrl = perfilJson.optString("foto_perfil", "");
-        String bannerUrl = perfilJson.optString("banner_url", "");
+        String bannerUrl     = perfilJson.optString("banner_url", "");
 
         editBiografia.setText(biografia);
         editSkills.setText(skills);
         editRedes.setText(redes);
 
-        bioOriginal = biografia.trim();
+        bioOriginal    = biografia.trim();
         skillsOriginal = skills.trim();
-        redesOriginal = redes.trim();
+        redesOriginal  = redes.trim();
         evaluarCambios();
 
         if (!displayName.trim().isEmpty()) {
@@ -245,21 +239,24 @@ public class PerfilActivity extends AppCompatActivity {
             txtUsername.setText("");
         }
 
-        //Banner
         if (bannerUrl != null && !bannerUrl.isEmpty()) {
             Glide.with(this)
                     .load(bannerUrl)
                     .centerCrop()
                     .into(imgBanner);
         }
-        //Avatar
+
         if (fotoPerfilUrl != null && !fotoPerfilUrl.isEmpty()) {
             Glide.with(this)
                     .load(fotoPerfilUrl)
                     .circleCrop()
                     .into(imgAvatar);
+
+            SharedPreferences prefs = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
+            prefs.edit().putString("avatar_url", fotoPerfilUrl).apply();
         }
     }
+
 
     private void mostrarGamificacion(JSONObject gamiJson) {
         int nivel = gamiJson.optInt("nivel", 1);
@@ -357,9 +354,9 @@ public class PerfilActivity extends AppCompatActivity {
     private void evaluarCambios() {
         if (layoutGuardarPerfil == null) return;
 
-        String b = editBiografia.getText().toString().trim();
+        String b  = editBiografia.getText().toString().trim();
         String sk = editSkills.getText().toString().trim();
-        String r = editRedes.getText().toString().trim();
+        String r  = editRedes.getText().toString().trim();
 
         boolean hayCambios = !(b.equals(bioOriginal) && sk.equals(skillsOriginal) && r.equals(redesOriginal));
         layoutGuardarPerfil.setVisibility(hayCambios ? View.VISIBLE : View.GONE);
@@ -367,8 +364,8 @@ public class PerfilActivity extends AppCompatActivity {
 
     private void guardarPerfil() {
         final String biografia = editBiografia.getText().toString().trim();
-        final String skills = editSkills.getText().toString().trim();
-        final String redes = editRedes.getText().toString().trim();
+        final String skills    = editSkills.getText().toString().trim();
+        final String redes     = editRedes.getText().toString().trim();
 
         new Thread(() -> {
             HttpURLConnection conn = null;
@@ -392,9 +389,9 @@ public class PerfilActivity extends AppCompatActivity {
                 if (code >= 200 && code < 300) {
                     runOnUiThread(() -> {
                         Toast.makeText(PerfilActivity.this, "Perfil actualizado ✅", Toast.LENGTH_SHORT).show();
-                        bioOriginal = biografia;
+                        bioOriginal    = biografia;
                         skillsOriginal = skills;
-                        redesOriginal = redes;
+                        redesOriginal  = redes;
                         evaluarCambios();
                     });
                 } else {

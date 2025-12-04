@@ -1,21 +1,13 @@
 package com.example.codereasonix;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,20 +29,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
-
-    private static final int MENU_PERFIL            = 1;
-    private static final int MENU_MIS_DESAFIOS      = 2;
-    private static final int MENU_LOGOUT            = 3;
-    private static final int MENU_MIS_POSTULACIONES = 4;
+public class HomeActivity extends BaseActivity {
 
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView recyclerDesafios;
     private DesafioAdapter adapter;
     private final List<Desafio> listaDesafios = new ArrayList<>();
-
-    private TextView txtWelcome;
-    private ImageButton btnMenu;
     private Spinner spDificultad, spLenguaje;
     private String selectedDificultad = "";
     private String selectedLenguaje  = "";
@@ -60,40 +44,13 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        txtWelcome       = findViewById(R.id.txtWelcome);
-        btnMenu          = findViewById(R.id.btnMenu);
+        setupTopBar();
+        setupBottomNav();
+
         swipeRefresh     = findViewById(R.id.swipeRefresh);
         recyclerDesafios = findViewById(R.id.recyclerDesafios);
-        if (recyclerDesafios == null) {
-            recyclerDesafios = findViewById(R.id.recyclerPreguntas);
-        }
-
-        spDificultad = findViewById(R.id.spDificultad);
-        spLenguaje   = findViewById(R.id.spLenguaje);
-
-        LinearLayout btnNavHome        = findViewById(R.id.btnNavHome);
-        LinearLayout btnNavEntrevistas = findViewById(R.id.btnNavEntrevistas);
-
-        SharedPreferences prefs = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
-        String nombreUsuario = prefs.getString("nombre_usuario", "");
-
-        String mensaje = "Bienvenido a CodeReasonix";
-        if (!nombreUsuario.isEmpty()) {
-            mensaje += ", " + nombreUsuario;
-        }
-        txtWelcome.setText(mensaje);
-
-        btnMenu.setOnClickListener(v -> {
-            PopupMenu popup = new PopupMenu(HomeActivity.this, v);
-
-            popup.getMenu().add(0, MENU_PERFIL,            0, "Perfil");
-            popup.getMenu().add(0, MENU_MIS_DESAFIOS,      1, "Mis desafíos");
-            popup.getMenu().add(0, MENU_MIS_POSTULACIONES, 2, "Mis postulaciones");
-            popup.getMenu().add(0, MENU_LOGOUT,            3, "Cerrar sesión");
-
-            popup.setOnMenuItemClickListener(this::onMenuItemSelected);
-            popup.show();
-        });
+        spDificultad     = findViewById(R.id.spDificultad);
+        spLenguaje       = findViewById(R.id.spLenguaje);
 
         recyclerDesafios.setLayoutManager(new LinearLayoutManager(this));
         adapter = new DesafioAdapter(listaDesafios, desafio -> {
@@ -102,9 +59,10 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(this, "ID de desafío inválido", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Intent intent = new Intent(HomeActivity.this, DesafioDetalleActivity.class);
-            intent.putExtra("id_desafio", id);
-            startActivity(intent);
+            startActivity(
+                    new android.content.Intent(HomeActivity.this, DesafioDetalleActivity.class)
+                            .putExtra("id_desafio", id)
+            );
         });
         recyclerDesafios.setAdapter(adapter);
 
@@ -113,25 +71,8 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         configurarSpinnersFiltros();
-
-        if (btnNavHome != null) {
-            btnNavHome.setOnClickListener(v -> {
-                if (recyclerDesafios != null) {
-                    recyclerDesafios.smoothScrollToPosition(0);
-                }
-            });
-        }
-
-        if (btnNavEntrevistas != null) {
-            btnNavEntrevistas.setOnClickListener(v -> {
-                Intent i = new Intent(HomeActivity.this, OfertasActivity.class);
-                startActivity(i);
-            });
-        }
-
         cargarDesafios();
     }
-
     private void configurarSpinnersFiltros() {
         final int VERDE = android.graphics.Color.parseColor("#00BFA6");
 
@@ -158,10 +99,8 @@ public class HomeActivity extends AppCompatActivity {
 
                     cargarDesafios();
                 }
-
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
-                    // Nada
                 }
             });
         }
@@ -195,31 +134,6 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    private boolean onMenuItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == MENU_PERFIL) {
-            Intent intent = new Intent(HomeActivity.this, PerfilActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (id == MENU_MIS_DESAFIOS) {
-            Intent intent = new Intent(HomeActivity.this, MisDesafiosActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (id == MENU_MIS_POSTULACIONES) {   // 🔹 nuevo
-            Intent intent = new Intent(HomeActivity.this, MisPostulacionesActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (id == MENU_LOGOUT) {
-            SharedPreferences prefs1 = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
-            prefs1.edit().clear().apply();
-            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-            return true;
-        }
-        return false;
     }
 
     @Override

@@ -40,19 +40,11 @@ public class MainActivity extends AppCompatActivity {
         botonLogin = findViewById(R.id.btnLogin);
         textoIrARegistro = findViewById(R.id.txtGoToRegister);
 
-        botonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hacerLogin();
-            }
-        });
+        botonLogin.setOnClickListener(view -> hacerLogin());
 
-        textoIrARegistro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        textoIrARegistro.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -65,71 +57,57 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection conexion = null;
-                try {
-                    URL url = new URL(Config.BASE_URL + "/usuarios/login");
-                    conexion = (HttpURLConnection) url.openConnection();
-                    conexion.setRequestMethod("POST");
-                    conexion.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                    conexion.setDoOutput(true);
+        new Thread(() -> {
+            HttpURLConnection conexion = null;
+            try {
+                URL url = new URL(Config.BASE_URL + "/usuarios/login");
+                conexion = (HttpURLConnection) url.openConnection();
+                conexion.setRequestMethod("POST");
+                conexion.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                conexion.setDoOutput(true);
 
-                    JSONObject cuerpo = new JSONObject();
-                    cuerpo.put("email", email);
-                    cuerpo.put("password", password);
+                JSONObject cuerpo = new JSONObject();
+                cuerpo.put("email", email);
+                cuerpo.put("password", password);
 
-                    OutputStream salida = conexion.getOutputStream();
-                    salida.write(cuerpo.toString().getBytes(StandardCharsets.UTF_8));
-                    salida.flush();
-                    salida.close();
+                OutputStream salida = conexion.getOutputStream();
+                salida.write(cuerpo.toString().getBytes(StandardCharsets.UTF_8));
+                salida.flush();
+                salida.close();
 
-                    int codigoRespuesta = conexion.getResponseCode();
+                int codigoRespuesta = conexion.getResponseCode();
 
-                    InputStream entrada;
-                    if (codigoRespuesta >= 200 && codigoRespuesta < 300) {
-                        entrada = conexion.getInputStream();
-                    } else {
-                        entrada = conexion.getErrorStream();
+                InputStream entrada = (codigoRespuesta >= 200 && codigoRespuesta < 300)
+                        ? conexion.getInputStream()
+                        : conexion.getErrorStream();
+
+                BufferedReader lector = new BufferedReader(
+                        new InputStreamReader(entrada, StandardCharsets.UTF_8)
+                );
+                StringBuilder respuesta = new StringBuilder();
+                String linea;
+                while ((linea = lector.readLine()) != null) {
+                    respuesta.append(linea);
+                }
+                lector.close();
+
+                final String textoRespuesta = respuesta.toString();
+                final int codigoFinal = codigoRespuesta;
+
+                runOnUiThread(() -> procesarRespuestaLogin(codigoFinal, textoRespuesta));
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    String mensaje = "Error de conexión: " + e.getClass().getSimpleName();
+                    if (e.getMessage() != null) {
+                        mensaje += " - " + e.getMessage();
                     }
-
-                    BufferedReader lector = new BufferedReader(
-                            new InputStreamReader(entrada, StandardCharsets.UTF_8)
-                    );
-                    StringBuilder respuesta = new StringBuilder();
-                    String linea;
-                    while ((linea = lector.readLine()) != null) {
-                        respuesta.append(linea);
-                    }
-                    lector.close();
-
-                    final String textoRespuesta = respuesta.toString();
-                    final int codigoFinal = codigoRespuesta;
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            procesarRespuestaLogin(codigoFinal, textoRespuesta);
-                        }
-                    });
-
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String mensaje = "Error de conexión: " + e.getClass().getSimpleName();
-                            if (e.getMessage() != null) {
-                                mensaje += " - " + e.getMessage();
-                            }
-                            Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } finally {
-                    if (conexion != null) {
-                        conexion.disconnect();
-                    }
+                    Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                });
+            } finally {
+                if (conexion != null) {
+                    conexion.disconnect();
                 }
             }
         }).start();
@@ -141,31 +119,22 @@ public class MainActivity extends AppCompatActivity {
 
             if (codigoRespuesta >= 200 && codigoRespuesta < 300) {
                 JSONObject usuarioJson = json.optJSONObject("usuario");
-                int idCliente = json.optInt("id_cliente", -1);
-                String nombre = "";
+                final int idCliente = json.optInt("id_cliente", -1);
+                final String nombre;
                 if (usuarioJson != null) {
                     nombre = usuarioJson.optString("nombre", "");
+                } else {
+                    nombre = "";
                 }
 
-                SharedPreferences prefs = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
-                prefs.edit()
-                        .putInt("id_cliente", idCliente)
-                        .putString("nombre_usuario", nombre)
-                        .apply();
-
-                String mensajeBienvenida = "Bienvenido";
-                if (!nombre.isEmpty()) {
-                    mensajeBienvenida += " " + nombre;
-                }
-                Toast.makeText(this, mensajeBienvenida, Toast.LENGTH_SHORT).show();
-
-                if (idCliente > 0) {
-                    otorgarXpPorLogin(idCliente);
+                if (idCliente <= 0) {
+                    Toast.makeText(this, "ID de cliente inválido", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
-                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                startActivity(intent);
-                finish();
+                otorgarXpPorLogin(idCliente);
+
+                fetchPerfilDespuesLogin(idCliente, nombre);
 
             } else {
                 String mensajeError = json.optString("error", "Error en login");
@@ -179,61 +148,149 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void otorgarXpPorLogin(final int idCliente) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection conexion = null;
+    private void fetchPerfilDespuesLogin(final int idCliente, final String nombre) {
+        new Thread(() -> {
+            HttpURLConnection conn = null;
+            try {
+                URL url = new URL(Config.BASE_URL + "/perfil/" + idCliente);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+
+                int code = conn.getResponseCode();
+                InputStream is = (code >= 200 && code < 300)
+                        ? conn.getInputStream()
+                        : conn.getErrorStream();
+
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(is, StandardCharsets.UTF_8)
+                );
+                StringBuilder sb = new StringBuilder();
+                String linea;
+                while ((linea = br.readLine()) != null) sb.append(linea);
+                br.close();
+
+                String body = sb.toString();
+                JSONObject perfilJson = null;
                 try {
-                    URL url = new URL(Config.BASE_URL + "/gamificacion/login-xp");
-                    conexion = (HttpURLConnection) url.openConnection();
-                    conexion.setRequestMethod("POST");
-                    conexion.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                    conexion.setDoOutput(true);
-
-                    JSONObject cuerpo = new JSONObject();
-                    cuerpo.put("id_cliente", idCliente);
-
-                    OutputStream salida = conexion.getOutputStream();
-                    salida.write(cuerpo.toString().getBytes(StandardCharsets.UTF_8));
-                    salida.flush();
-                    salida.close();
-
-                    int codigoRespuesta = conexion.getResponseCode();
-
-                    InputStream entrada;
-                    if (codigoRespuesta >= 200 && codigoRespuesta < 300) {
-                        entrada = conexion.getInputStream();
-                    } else {
-                        entrada = conexion.getErrorStream();
+                    if (!body.isEmpty()) {
+                        perfilJson = new JSONObject(body);
                     }
-
-                    BufferedReader lector = new BufferedReader(
-                            new InputStreamReader(entrada, StandardCharsets.UTF_8)
-                    );
-                    StringBuilder respuesta = new StringBuilder();
-                    String linea;
-                    while ((linea = lector.readLine()) != null) {
-                        respuesta.append(linea);
-                    }
-                    lector.close();
-
-                    final String textoRespuesta = respuesta.toString();
-                    final int codigoFinal = codigoRespuesta;
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            procesarRespuestaXpLogin(codigoFinal, textoRespuesta);
-                        }
-                    });
-
-                } catch (final Exception e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
-                } finally {
-                    if (conexion != null) {
-                        conexion.disconnect();
+                }
+
+                String fotoPerfilUrl = "";
+                String displayName   = "";
+                String username      = "";
+
+                if (perfilJson != null) {
+                    fotoPerfilUrl = perfilJson.optString("foto_perfil", "");
+                    displayName   = perfilJson.optString("display_name", "");
+                    username      = perfilJson.optString("username", "");
+                }
+
+                final String finalFotoPerfilUrl = fotoPerfilUrl;
+                final String finalDisplayName   = displayName;
+                final String finalUsername      = username;
+
+                runOnUiThread(() -> {
+                    SharedPreferences prefs = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putInt("id_cliente", idCliente);
+                    editor.putString("nombre_usuario", nombre);
+
+                    editor.putString("avatar_url", finalFotoPerfilUrl != null ? finalFotoPerfilUrl : "");
+
+                    if (!finalDisplayName.isEmpty()) {
+                        editor.putString("display_name", finalDisplayName);
                     }
+                    if (!finalUsername.isEmpty()) {
+                        editor.putString("username", finalUsername);
+                    }
+                    editor.apply();
+
+                    String mensajeBienvenida = "Bienvenido";
+                    if (!nombre.isEmpty()) {
+                        mensajeBienvenida += " " + nombre;
+                    }
+                    Toast.makeText(MainActivity.this, mensajeBienvenida, Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    SharedPreferences prefs = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
+                    prefs.edit()
+                            .putInt("id_cliente", idCliente)
+                            .putString("nombre_usuario", nombre)
+                            .putString("avatar_url", "")
+                            .apply();
+
+                    String mensajeBienvenida = "Bienvenido";
+                    if (!nombre.isEmpty()) {
+                        mensajeBienvenida += " " + nombre;
+                    }
+                    Toast.makeText(MainActivity.this, mensajeBienvenida, Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
+            } finally {
+                if (conn != null) conn.disconnect();
+            }
+        }).start();
+    }
+
+    private void otorgarXpPorLogin(final int idCliente) {
+        new Thread(() -> {
+            HttpURLConnection conexion = null;
+            try {
+                URL url = new URL(Config.BASE_URL + "/gamificacion/login-xp");
+                conexion = (HttpURLConnection) url.openConnection();
+                conexion.setRequestMethod("POST");
+                conexion.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                conexion.setDoOutput(true);
+
+                JSONObject cuerpo = new JSONObject();
+                cuerpo.put("id_cliente", idCliente);
+
+                OutputStream salida = conexion.getOutputStream();
+                salida.write(cuerpo.toString().getBytes(StandardCharsets.UTF_8));
+                salida.flush();
+                salida.close();
+
+                int codigoRespuesta = conexion.getResponseCode();
+
+                InputStream entrada = (codigoRespuesta >= 200 && codigoRespuesta < 300)
+                        ? conexion.getInputStream()
+                        : conexion.getErrorStream();
+
+                BufferedReader lector = new BufferedReader(
+                        new InputStreamReader(entrada, StandardCharsets.UTF_8)
+                );
+                StringBuilder respuesta = new StringBuilder();
+                String linea;
+                while ((linea = lector.readLine()) != null) {
+                    respuesta.append(linea);
+                }
+                lector.close();
+
+                final String textoRespuesta = respuesta.toString();
+                final int codigoFinal = codigoRespuesta;
+
+                runOnUiThread(() -> procesarRespuestaXpLogin(codigoFinal, textoRespuesta));
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (conexion != null) {
+                    conexion.disconnect();
                 }
             }
         }).start();

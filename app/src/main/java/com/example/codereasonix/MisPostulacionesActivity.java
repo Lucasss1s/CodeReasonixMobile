@@ -1,6 +1,5 @@
 package com.example.codereasonix;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -24,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MisPostulacionesActivity extends AppCompatActivity {
+public class MisPostulacionesActivity extends BaseActivity {
 
     private SwipeRefreshLayout swipePostulaciones;
     private RecyclerView recyclerPostulaciones;
@@ -35,6 +34,9 @@ public class MisPostulacionesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mis_postulaciones);
+
+        setupTopBar();
+        setupBottomNav();
 
         swipePostulaciones    = findViewById(R.id.swipePostulaciones);
         recyclerPostulaciones = findViewById(R.id.recyclerPostulaciones);

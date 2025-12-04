@@ -1,6 +1,5 @@
 package com.example.codereasonix;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MisDesafiosActivity extends AppCompatActivity {
+public class MisDesafiosActivity extends BaseActivity {
 
     private RecyclerView recycler;
     private final List<Participacion> lista = new ArrayList<>();
@@ -41,7 +40,11 @@ public class MisDesafiosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mis_desafios);
 
-        idCliente = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE).getInt("id_cliente", -1);
+        setupTopBar();
+        setupBottomNav();
+
+        idCliente = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE)
+                .getInt("id_cliente", -1);
 
         recycler = findViewById(R.id.recyclerMisDesafios);
         recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -65,7 +68,9 @@ public class MisDesafiosActivity extends AppCompatActivity {
                 con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("GET");
 
-                BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8)
+                );
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = br.readLine()) != null) sb.append(line);
@@ -83,7 +88,9 @@ public class MisDesafiosActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(this, "Error cargando mis desafíos", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->
+                        Toast.makeText(this, "Error cargando mis desafíos", Toast.LENGTH_SHORT).show()
+                );
             } finally {
                 if (con != null) con.disconnect();
             }
@@ -181,12 +188,15 @@ public class MisDesafiosActivity extends AppCompatActivity {
             }
         }
 
-        @Override public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mi_desafio, parent, false);
+        @Override
+        public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_mi_desafio, parent, false);
             return new VH(v);
         }
 
-        @Override public void onBindViewHolder(VH h, int position) {
+        @Override
+        public void onBindViewHolder(VH h, int position) {
             Participacion p = data.get(position);
 
             if (p.imagenUrl != null && !p.imagenUrl.isEmpty()) {
@@ -245,7 +255,8 @@ public class MisDesafiosActivity extends AppCompatActivity {
             }
         }
 
-        @Override public int getItemCount() { return data.size(); }
+        @Override
+        public int getItemCount() { return data.size(); }
 
         private void reclamar(int adapterPos) {
             if (adapterPos == RecyclerView.NO_POSITION) return;

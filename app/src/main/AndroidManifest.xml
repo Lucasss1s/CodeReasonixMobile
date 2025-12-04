@@ -24,6 +24,18 @@
             android:name=".MisDesafiosActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".OfertasActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".OfertaDetalleActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MisPostulacionesActivity"
+            android:exported="false" />
+
         <activity android:name=".HomeActivity" />
 
         <activity android:name=".RegisterActivity" />

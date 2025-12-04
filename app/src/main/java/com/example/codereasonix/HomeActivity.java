@@ -10,9 +10,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,13 +39,16 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private static final int MENU_PERFIL = 1;
-    private static final int MENU_MIS_DESAFIOS = 2;
-    private static final int MENU_LOGOUT = 3;
+    private static final int MENU_PERFIL            = 1;
+    private static final int MENU_MIS_DESAFIOS      = 2;
+    private static final int MENU_LOGOUT            = 3;
+    private static final int MENU_MIS_POSTULACIONES = 4;
+
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView recyclerDesafios;
     private DesafioAdapter adapter;
     private final List<Desafio> listaDesafios = new ArrayList<>();
+
     private TextView txtWelcome;
     private ImageButton btnMenu;
     private Spinner spDificultad, spLenguaje;
@@ -55,9 +60,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        txtWelcome = findViewById(R.id.txtWelcome);
-        btnMenu = findViewById(R.id.btnMenu);
-        swipeRefresh = findViewById(R.id.swipeRefresh);
+        txtWelcome       = findViewById(R.id.txtWelcome);
+        btnMenu          = findViewById(R.id.btnMenu);
+        swipeRefresh     = findViewById(R.id.swipeRefresh);
         recyclerDesafios = findViewById(R.id.recyclerDesafios);
         if (recyclerDesafios == null) {
             recyclerDesafios = findViewById(R.id.recyclerPreguntas);
@@ -65,6 +70,9 @@ public class HomeActivity extends AppCompatActivity {
 
         spDificultad = findViewById(R.id.spDificultad);
         spLenguaje   = findViewById(R.id.spLenguaje);
+
+        LinearLayout btnNavHome        = findViewById(R.id.btnNavHome);
+        LinearLayout btnNavEntrevistas = findViewById(R.id.btnNavEntrevistas);
 
         SharedPreferences prefs = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE);
         String nombreUsuario = prefs.getString("nombre_usuario", "");
@@ -78,9 +86,10 @@ public class HomeActivity extends AppCompatActivity {
         btnMenu.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(HomeActivity.this, v);
 
-            popup.getMenu().add(0, MENU_PERFIL, 0, "Perfil");
-            popup.getMenu().add(0, MENU_MIS_DESAFIOS, 1, "Mis desafíos");
-            popup.getMenu().add(0, MENU_LOGOUT, 2, "Cerrar sesión");
+            popup.getMenu().add(0, MENU_PERFIL,            0, "Perfil");
+            popup.getMenu().add(0, MENU_MIS_DESAFIOS,      1, "Mis desafíos");
+            popup.getMenu().add(0, MENU_MIS_POSTULACIONES, 2, "Mis postulaciones");
+            popup.getMenu().add(0, MENU_LOGOUT,            3, "Cerrar sesión");
 
             popup.setOnMenuItemClickListener(this::onMenuItemSelected);
             popup.show();
@@ -104,6 +113,21 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         configurarSpinnersFiltros();
+
+        if (btnNavHome != null) {
+            btnNavHome.setOnClickListener(v -> {
+                if (recyclerDesafios != null) {
+                    recyclerDesafios.smoothScrollToPosition(0);
+                }
+            });
+        }
+
+        if (btnNavEntrevistas != null) {
+            btnNavEntrevistas.setOnClickListener(v -> {
+                Intent i = new Intent(HomeActivity.this, OfertasActivity.class);
+                startActivity(i);
+            });
+        }
 
         cargarDesafios();
     }
@@ -168,7 +192,6 @@ public class HomeActivity extends AppCompatActivity {
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
-                    // Nada
                 }
             });
         }
@@ -182,6 +205,10 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         } else if (id == MENU_MIS_DESAFIOS) {
             Intent intent = new Intent(HomeActivity.this, MisDesafiosActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == MENU_MIS_POSTULACIONES) {   // 🔹 nuevo
+            Intent intent = new Intent(HomeActivity.this, MisPostulacionesActivity.class);
             startActivity(intent);
             return true;
         } else if (id == MENU_LOGOUT) {

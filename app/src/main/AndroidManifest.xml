@@ -36,6 +36,15 @@
             android:name=".MisPostulacionesActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ComunidadActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".PerfilPublicoActivity"
+            android:exported="false" />
+
         <activity android:name=".HomeActivity" />
 
         <activity android:name=".RegisterActivity" />

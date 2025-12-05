@@ -10,6 +10,65 @@
     android:paddingHorizontal="24dp">
 
     <LinearLayout
+        android:id="@+id/btnNavComunidad"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingHorizontal="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/iconComunidad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="👥"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/textComunidad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comunidad"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btnNavHome"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingHorizontal="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnNavComunidad"
+        app:layout_constraintEnd_toStartOf="@id/btnNavEntrevistas">
+
+        <TextView
+            android:id="@+id/iconHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🏠"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/textHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Inicio"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/btnNavEntrevistas"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -34,36 +93,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Entrevistas"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/btnNavHome"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:paddingHorizontal="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/iconHome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🏠"
-            android:textSize="22sp" />
-
-        <TextView
-            android:id="@+id/textHome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Inicio"
             android:textColor="#FFFFFF"
             android:textSize="12sp" />
     </LinearLayout>

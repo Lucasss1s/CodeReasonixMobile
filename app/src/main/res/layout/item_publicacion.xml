@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    card_view:cardBackgroundColor="#111122"
+    card_view:cardCornerRadius="12dp"
+    card_view:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/txtAvatarInitial"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:text="U"
+                android:textColor="#E5E7EB"
+                android:textStyle="bold"
+                android:background="@drawable/bg_avatar_circle" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
+
+                <TextView
+                    android:id="@+id/txtAutor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#E5E7EB"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:text="Autor" />
+
+                <TextView
+                    android:id="@+id/txtFecha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#9CA3AF"
+                    android:textSize="11sp"
+                    android:text="fecha" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⋮"
+                android:textSize="18sp"
+                android:textColor="#9CA3AF"
+                android:padding="4dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtContenido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#E5E7EB"
+            android:textSize="14sp"
+            android:layout_marginTop="6dp"
+            android:text="Contenido de la publicación..." />
+
+        <ImageView
+            android:id="@+id/imgPublicacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/txtLikesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 👍"
+                android:textColor="#9CA3AF"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txtDislikesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 👎"
+                android:textColor="#9CA3AF"
+                android:textSize="12sp"
+                android:layout_marginStart="12dp" />
+
+            <TextView
+                android:id="@+id/txtComentariosCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 comentarios"
+                android:textColor="#9CA3AF"
+                android:textSize="12sp"
+                android:layout_marginStart="12dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutNuevoComentario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="6dp">
+
+            <EditText
+                android:id="@+id/edtNuevoComentario"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Agregar un comentario..."
+                android:background="#15152A"
+                android:padding="8dp"
+                android:textColor="#E5E7EB"
+                android:textColorHint="#6B7280"
+                android:textSize="13sp"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="3" />
+
+            <Button
+                android:id="@+id/btnEnviarComentario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Comentar"
+                android:textAllCaps="false"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerComentarios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginTop="6dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -95,8 +95,20 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void setupBottomNav() {
-        LinearLayout btnNavHome        = findViewById(R.id.btnNavHome);
+        LinearLayout btnNavComunidad  = findViewById(R.id.btnNavComunidad);
+        LinearLayout btnNavHome       = findViewById(R.id.btnNavHome);
         LinearLayout btnNavEntrevistas = findViewById(R.id.btnNavEntrevistas);
+
+        if (btnNavComunidad != null) {
+            btnNavComunidad.setOnClickListener(v -> {
+                if (this instanceof ComunidadActivity) {
+                    return;
+                }
+                Intent i = new Intent(this, ComunidadActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            });
+        }
 
         if (btnNavHome != null) {
             btnNavHome.setOnClickListener(v -> {

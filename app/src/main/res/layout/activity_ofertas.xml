@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#101020"
-    android:padding="24dp"
+    android:fitsSystemWindows="true"
     tools:context=".OfertasActivity">
 
     <include
@@ -23,8 +23,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:paddingHorizontal="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         app:layout_constraintTop_toBottomOf="@id/includeTopBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,6 +80,7 @@
         layout="@layout/bottom_nav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

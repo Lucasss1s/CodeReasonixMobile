@@ -40,6 +40,8 @@ public class MisDesafiosActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mis_desafios);
 
+        enableImmersiveMode();
+
         setupTopBar();
         setupBottomNav();
 

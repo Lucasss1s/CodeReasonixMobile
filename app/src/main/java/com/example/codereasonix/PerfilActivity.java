@@ -59,6 +59,8 @@ public class PerfilActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
+        enableImmersiveMode();
+
         setupTopBar();
         setupBottomNav();
 
@@ -210,11 +212,11 @@ public class PerfilActivity extends BaseActivity {
     }
 
     private void mostrarPerfil(JSONObject perfilJson) {
-        String biografia   = perfilJson.optString("biografia", "");
-        String skills      = perfilJson.optString("skills", "");
-        String redes       = perfilJson.optString("redes_sociales", "");
-        String displayName = perfilJson.optString("display_name", "");
-        String username    = perfilJson.optString("username", "");
+        String biografia     = perfilJson.optString("biografia", "");
+        String skills        = perfilJson.optString("skills", "");
+        String redes         = perfilJson.optString("redes_sociales", "");
+        String displayName   = perfilJson.optString("display_name", "");
+        String username      = perfilJson.optString("username", "");
         String fotoPerfilUrl = perfilJson.optString("foto_perfil", "");
         String bannerUrl     = perfilJson.optString("banner_url", "");
 
@@ -257,21 +259,20 @@ public class PerfilActivity extends BaseActivity {
         }
     }
 
-
     private void mostrarGamificacion(JSONObject gamiJson) {
-        int nivel = gamiJson.optInt("nivel", 1);
+        int nivel   = gamiJson.optInt("nivel", 1);
         int xpTotal = gamiJson.optInt("xp_total", 0);
-        int streak = gamiJson.optInt("streak", 0);
+        int streak  = gamiJson.optInt("streak", 0);
 
         txtNivel.setText(String.valueOf(nivel));
         txtXpTotal.setText(String.valueOf(xpTotal));
         txtRacha.setText("🔥 " + streak);
 
         JSONObject progreso = gamiJson.optJSONObject("progreso");
-        int xpEnNivel = 0;
+        int xpEnNivel   = 0;
         int xpParaSubir = 100;
         if (progreso != null) {
-            xpEnNivel = progreso.optInt("xpEnNivel", 0);
+            xpEnNivel   = progreso.optInt("xpEnNivel", 0);
             xpParaSubir = progreso.optInt("xpParaSubir", 100);
         }
 
@@ -282,7 +283,7 @@ public class PerfilActivity extends BaseActivity {
     }
 
     private void mostrarLogros(JSONObject logrosJson) {
-        JSONArray defs = logrosJson.optJSONArray("defs");
+        JSONArray defs      = logrosJson.optJSONArray("defs");
         JSONArray obtenidos = logrosJson.optJSONArray("obtenidos");
 
         listaLogrosTodas.clear();
@@ -308,10 +309,10 @@ public class PerfilActivity extends BaseActivity {
             int id = def.optInt("id_logro", -1);
             if (id <= 0) continue;
 
-            String icono = def.optString("icono", "🏅");
-            String titulo = def.optString("titulo", "Logro");
+            String icono       = def.optString("icono", "🏅");
+            String titulo      = def.optString("titulo", "Logro");
             String descripcion = def.optString("descripcion", "");
-            int xp = def.optInt("xp_otorgado", 0);
+            int xp             = def.optInt("xp_otorgado", 0);
             boolean desbloqueado = idsDesbloqueados.contains(id);
 
             Logro logro = new Logro(id, icono, titulo, descripcion, xp, desbloqueado);

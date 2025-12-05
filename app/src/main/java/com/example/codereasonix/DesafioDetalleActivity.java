@@ -1,6 +1,5 @@
 package com.example.codereasonix;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,7 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DesafioDetalleActivity extends AppCompatActivity {
+public class DesafioDetalleActivity extends BaseActivity {
 
     private int idDesafio;
     private TextView txtNombre, txtHp, txtRecompensa;
@@ -44,13 +43,17 @@ public class DesafioDetalleActivity extends AppCompatActivity {
     private PreguntaAdapter adapter;
     private Desafio desafio;
 
-    private final int COLOR_ACCENT = 0xFF00BFA6;
+    private final int COLOR_ACCENT   = 0xFF00BFA6;
     private final int COLOR_DISABLED = 0xFF3A3A3A;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_desafio_detalle);
+
+        enableImmersiveMode();
+        setupTopBar();
+        setupBottomNav();
 
         idDesafio         = getIntent().getIntExtra("id_desafio", -1);
         txtNombre         = findViewById(R.id.txtNombreBoss);
@@ -71,7 +74,15 @@ public class DesafioDetalleActivity extends AppCompatActivity {
         verificarParticipacionYcargar();
     }
 
-    public void refrescarBoss() { cargarDetalle(); }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        verificarParticipacionYcargar();
+    }
+
+    public void refrescarBoss() {
+        cargarDetalle();
+    }
 
     private void setEstadoBotonInscripcion(boolean inscripto) {
         if (inscripto) {
@@ -95,7 +106,9 @@ public class DesafioDetalleActivity extends AppCompatActivity {
                 con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("GET");
 
-                BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8)
+                );
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = br.readLine()) != null) sb.append(line);
@@ -109,7 +122,8 @@ public class DesafioDetalleActivity extends AppCompatActivity {
                     txtHp.setText("HP: " + desafio.getHpRestante() + "/" + desafio.getHpTotal());
                     hpBar.setMax(desafio.getHpTotal());
                     hpBar.setProgress(desafio.getHpRestante());
-                    txtRecompensa.setText("XP: " + desafio.getRecompensaXp() + " • Monedas: " + desafio.getRecompensaMoneda());
+                    txtRecompensa.setText("XP: " + desafio.getRecompensaXp()
+                            + " • Monedas: " + desafio.getRecompensaMoneda());
 
                     String img = desafio.getImagenUrl();
                     if (img != null && !img.isEmpty()) {
@@ -121,7 +135,9 @@ public class DesafioDetalleActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(this, "Error cargando detalle", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->
+                        Toast.makeText(this, "Error cargando detalle", Toast.LENGTH_SHORT).show()
+                );
             } finally {
                 if (con != null) con.disconnect();
             }
@@ -145,7 +161,8 @@ public class DesafioDetalleActivity extends AppCompatActivity {
         new Thread(() -> {
             HttpURLConnection con = null;
             try {
-                int idCliente = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE).getInt("id_cliente", -1);
+                int idCliente = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE)
+                        .getInt("id_cliente", -1);
                 if (idCliente == -1) {
                     runOnUiThread(() -> {
                         setEstadoBotonInscripcion(false);
@@ -160,9 +177,12 @@ public class DesafioDetalleActivity extends AppCompatActivity {
                 con.setRequestMethod("GET");
 
                 InputStream in = (con.getResponseCode() >= 200 && con.getResponseCode() < 300)
-                        ? con.getInputStream() : con.getErrorStream();
+                        ? con.getInputStream()
+                        : con.getErrorStream();
 
-                BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(in, StandardCharsets.UTF_8)
+                );
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = br.readLine()) != null) sb.append(line);
@@ -185,9 +205,11 @@ public class DesafioDetalleActivity extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                     });
                 } else {
-                    final int idPart = participanteRow.optInt("id_participante",
+                    final int idPart = participanteRow.optInt(
+                            "id_participante",
                             participanteRow.optJSONObject("participante_desafio") != null
-                                    ? participanteRow.optJSONObject("participante_desafio").optInt("id_participante", -1)
+                                    ? participanteRow.optJSONObject("participante_desafio")
+                                    .optInt("id_participante", -1)
                                     : -1
                     );
                     runOnUiThread(() -> setEstadoBotonInscripcion(true));
@@ -196,7 +218,9 @@ public class DesafioDetalleActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(this, "Error verificando participación", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->
+                        Toast.makeText(this, "Error verificando participación", Toast.LENGTH_SHORT).show()
+                );
             } finally {
                 if (con != null) con.disconnect();
             }
@@ -207,9 +231,14 @@ public class DesafioDetalleActivity extends AppCompatActivity {
         new Thread(() -> {
             HttpURLConnection con = null;
             try {
-                int idCliente = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE).getInt("id_cliente", -1);
+                int idCliente = getSharedPreferences("CodeReasonixPrefs", MODE_PRIVATE)
+                        .getInt("id_cliente", -1);
                 if (idCliente == -1) {
-                    runOnUiThread(() -> Toast.makeText(this, "Iniciá sesión para inscribirte", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() ->
+                            Toast.makeText(this,
+                                    "Iniciá sesión para inscribirte",
+                                    Toast.LENGTH_SHORT).show()
+                    );
                     return;
                 }
 
@@ -229,9 +258,13 @@ public class DesafioDetalleActivity extends AppCompatActivity {
                 }
 
                 int code = con.getResponseCode();
-                InputStream in = (code >= 200 && code < 300) ? con.getInputStream() : con.getErrorStream();
+                InputStream in = (code >= 200 && code < 300)
+                        ? con.getInputStream()
+                        : con.getErrorStream();
 
-                BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(in, StandardCharsets.UTF_8)
+                );
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = br.readLine()) != null) sb.append(line);
@@ -241,7 +274,7 @@ public class DesafioDetalleActivity extends AppCompatActivity {
                     JSONObject resp = new JSONObject(sb.toString());
                     JSONObject participante = resp.optJSONObject("participante");
 
-                    runOnUiThread(() -> setEstadoBotonInscripcion(true)); // cambia a "Inscripto"
+                    runOnUiThread(() -> setEstadoBotonInscripcion(true));
 
                     if (participante != null) {
                         int idPart = participante.optInt("id_participante", -1);
@@ -250,12 +283,20 @@ public class DesafioDetalleActivity extends AppCompatActivity {
                         verificarParticipacionYcargar();
                     }
                 } else {
-                    runOnUiThread(() -> Toast.makeText(this, "No se pudo inscribir", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() ->
+                            Toast.makeText(this,
+                                    "No se pudo inscribir",
+                                    Toast.LENGTH_SHORT).show()
+                    );
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(this, "Error al inscribirse", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->
+                        Toast.makeText(this,
+                                "Error al inscribirse",
+                                Toast.LENGTH_SHORT).show()
+                );
             } finally {
                 if (con != null) con.disconnect();
             }
@@ -266,11 +307,15 @@ public class DesafioDetalleActivity extends AppCompatActivity {
         new Thread(() -> {
             HttpURLConnection conPreg = null;
             try {
-                URL urlPreg = new URL(Config.BASE_URL + "/participante-pregunta/por-participante/" + idParticipante);
+                URL urlPreg = new URL(
+                        Config.BASE_URL + "/participante-pregunta/por-participante/" + idParticipante
+                );
                 conPreg = (HttpURLConnection) urlPreg.openConnection();
                 conPreg.setRequestMethod("GET");
 
-                BufferedReader br2 = new BufferedReader(new InputStreamReader(conPreg.getInputStream(), StandardCharsets.UTF_8));
+                BufferedReader br2 = new BufferedReader(
+                        new InputStreamReader(conPreg.getInputStream(), StandardCharsets.UTF_8)
+                );
                 StringBuilder sb2 = new StringBuilder();
                 String line;
                 while ((line = br2.readLine()) != null) sb2.append(line);
@@ -286,16 +331,14 @@ public class DesafioDetalleActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(this, "Error cargando preguntas", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->
+                        Toast.makeText(this,
+                                "Error cargando preguntas",
+                                Toast.LENGTH_SHORT).show()
+                );
             } finally {
                 if (conPreg != null) conPreg.disconnect();
             }
         }).start();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        verificarParticipacionYcargar();
     }
 }

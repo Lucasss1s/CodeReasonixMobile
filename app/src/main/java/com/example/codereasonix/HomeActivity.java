@@ -44,6 +44,8 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        enableImmersiveMode();
+
         setupTopBar();
         setupBottomNav();
 
@@ -73,6 +75,7 @@ public class HomeActivity extends BaseActivity {
         configurarSpinnersFiltros();
         cargarDesafios();
     }
+
     private void configurarSpinnersFiltros() {
         final int VERDE = android.graphics.Color.parseColor("#00BFA6");
 

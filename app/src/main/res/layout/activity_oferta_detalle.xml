@@ -1,114 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#111827"
-    android:padding="16dp"
-    tools:context=".OfertaDetalleActivity">
+    android:background="#101020"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <include
+        android:id="@+id/includeTopBar"
+        layout="@layout/top_bar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/txtTituloDetalle"
+    <ScrollView
+        android:id="@+id/scrollOfertaDetalle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintTop_toBottomOf="@id/includeTopBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Título de la oferta"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#F9FAFB"
-            android:layout_marginBottom="4dp"
-            android:maxLines="3"
-            android:ellipsize="end" />
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="24dp">
 
-        <TextView
-            android:id="@+id/txtEmpresaDetalle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nombre de la empresa"
-            android:textColor="#A5B4FC"
-            android:textSize="15sp"
-            android:layout_marginBottom="2dp" />
+            <TextView
+                android:id="@+id/txtTituloDetalle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Título de la oferta"
+                android:textColor="#E5E7EB"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp" />
 
-        <TextView
-            android:id="@+id/txtSectorDetalle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sector"
-            android:textColor="#9CA3AF"
-            android:textSize="13sp"
-            android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/txtEmpresaDetalle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Empresa"
+                android:textColor="#9CA3AF"
+                android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/txtUbicacionDetalle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ubicación"
-            android:textColor="#D1D5DB"
-            android:textSize="14sp"
-            android:layout_marginBottom="2dp" />
+            <TextView
+                android:id="@+id/txtSectorDetalle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sector"
+                android:textColor="#9CA3AF"
+                android:textSize="14sp"
+                android:paddingTop="2dp" />
 
-        <TextView
-            android:id="@+id/txtFechaDetalle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Fecha de publicación"
-            android:textColor="#9CA3AF"
-            android:textSize="12sp"
-            android:layout_marginBottom="12dp" />
+            <TextView
+                android:id="@+id/txtUbicacionDetalle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ubicación"
+                android:textColor="#9CA3AF"
+                android:textSize="14sp"
+                android:paddingTop="2dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Descripción"
-            android:textColor="#E5E7EB"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp" />
+            <TextView
+                android:id="@+id/txtFechaDetalle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fecha de publicación"
+                android:textColor="#6B7280"
+                android:textSize="12sp"
+                android:paddingTop="2dp"
+                android:paddingBottom="12dp" />
 
-        <TextView
-            android:id="@+id/txtDescripcionDetalle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Texto de la descripción de la oferta..."
-            android:textColor="#D1D5DB"
-            android:textSize="14sp"
-            android:layout_marginBottom="12dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descripción"
+                android:textColor="#FBBF24"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Requisitos"
-            android:textColor="#E5E7EB"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp" />
+            <TextView
+                android:id="@+id/txtDescripcionDetalle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#E5E7EB"
+                android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/txtRequisitosDetalle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Lista de requisitos..."
-            android:textColor="#D1D5DB"
-            android:textSize="14sp"
-            android:layout_marginBottom="20dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Requisitos"
+                android:textColor="#FBBF24"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingTop="16dp"
+                android:paddingBottom="4dp" />
 
-        <Button
-            android:id="@+id/btnPostularme"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Postularme"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            android:textColor="#111827"
-            android:backgroundTint="#00BFA6"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/txtRequisitosDetalle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#E5E7EB"
+                android:textSize="14sp" />
 
-    </LinearLayout>
-</ScrollView>
+            <Button
+                android:id="@+id/btnPostularme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Postularme"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:backgroundTint="#00BFA6"
+                android:textColor="#111111" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/bottomNav"
+        layout="@layout/bottom_nav"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

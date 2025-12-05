@@ -1,18 +1,11 @@
 package com.example.codereasonix;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.example.codereasonix.model.Desafio;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,7 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class OfertaDetalleActivity extends AppCompatActivity {
+public class OfertaDetalleActivity extends BaseActivity {
 
     private int idOferta;
 
@@ -41,6 +34,10 @@ public class OfertaDetalleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_oferta_detalle);
+
+        enableImmersiveMode();
+        setupTopBar();
+        setupBottomNav();
 
         idOferta = getIntent().getIntExtra("id_oferta", -1);
 

@@ -38,6 +38,8 @@ public class OfertasActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ofertas);
 
+        enableImmersiveMode();
+
         setupTopBar();
         setupBottomNav();
 
@@ -53,6 +55,12 @@ public class OfertasActivity extends BaseActivity {
         });
         recyclerOfertas.setAdapter(adapter);
 
+        cargarOfertas();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         cargarOfertas();
     }
 
@@ -92,6 +100,7 @@ public class OfertasActivity extends BaseActivity {
                     progressOfertas.setVisibility(View.GONE);
                     if (listaOfertas.isEmpty()) {
                         txtEmpty.setVisibility(View.VISIBLE);
+                        txtEmpty.setText("No hay ofertas disponibles por el momento.");
                         recyclerOfertas.setVisibility(View.GONE);
                     } else {
                         txtEmpty.setVisibility(View.GONE);

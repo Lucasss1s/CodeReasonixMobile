@@ -35,6 +35,8 @@ public class MisPostulacionesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mis_postulaciones);
 
+        enableImmersiveMode();
+
         setupTopBar();
         setupBottomNav();
 
@@ -54,7 +56,7 @@ public class MisPostulacionesActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
+        super.onResume();  // BaseActivity.onResume -> reaplica immersive + avatar
         cargarPostulaciones();
     }
 

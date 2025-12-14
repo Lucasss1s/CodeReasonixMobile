@@ -45,6 +45,9 @@ public class PerfilActivity extends BaseActivity {
     private RecyclerView recyclerLogros;
     private TextView btnToggleLogros;
 
+    private TextView txtMonedas;
+
+
     private final List<Logro> listaLogrosTodas = new ArrayList<>();
     private final List<Logro> listaLogrosVisibles = new ArrayList<>();
     private LogroAdapter logroAdapter;
@@ -85,6 +88,7 @@ public class PerfilActivity extends BaseActivity {
         txtXpTotal        = findViewById(R.id.txtXpTotal);
         txtRacha          = findViewById(R.id.txtRacha);
         txtProgresoDetalle = findViewById(R.id.txtProgresoDetalle);
+        txtMonedas = findViewById(R.id.txtMonedas);
 
         editBiografia = findViewById(R.id.editBiografia);
         editSkills    = findViewById(R.id.editSkills);
@@ -126,11 +130,13 @@ public class PerfilActivity extends BaseActivity {
             HttpURLConnection connUsuario = null;
             HttpURLConnection connGami = null;
             HttpURLConnection connLogros = null;
+            HttpURLConnection connMonedas = null;
 
             JSONObject perfilJson = null;
             JSONObject usuarioJson = null;
             JSONObject gamiJson = null;
             JSONObject logrosJson = null;
+            JSONObject monedasJson = null;
 
             try {
                 URL urlPerfil = new URL(Config.BASE_URL + "/perfil/" + idCliente);
@@ -148,6 +154,9 @@ public class PerfilActivity extends BaseActivity {
                 connGami.setRequestMethod("GET");
                 gamiJson = leerJson(connGami);
 
+                connMonedas = (HttpURLConnection) new URL(Config.BASE_URL + "/gamificacion/monedas/" + idCliente).openConnection();
+                monedasJson = leerJson(connMonedas);
+
                 URL urlLogros = new URL(Config.BASE_URL + "/logros/me/" + idCliente);
                 connLogros = (HttpURLConnection) urlLogros.openConnection();
                 connLogros.setRequestMethod("GET");
@@ -162,18 +171,21 @@ public class PerfilActivity extends BaseActivity {
                 if (connPerfil != null) connPerfil.disconnect();
                 if (connUsuario != null) connUsuario.disconnect();
                 if (connGami != null) connGami.disconnect();
+                if (connMonedas != null) connMonedas.disconnect();
                 if (connLogros != null) connLogros.disconnect();
             }
 
             JSONObject finalPerfilJson = perfilJson;
             JSONObject finalUsuarioJson = usuarioJson;
             JSONObject finalGamiJson = gamiJson;
+            JSONObject fMonedas = monedasJson;
             JSONObject finalLogrosJson = logrosJson;
 
             runOnUiThread(() -> {
                 if (finalUsuarioJson != null) mostrarUsuario(finalUsuarioJson);
                 if (finalPerfilJson != null) mostrarPerfil(finalPerfilJson);
                 if (finalGamiJson != null) mostrarGamificacion(finalGamiJson);
+                if (fMonedas != null) mostrarMonedas(fMonedas);
                 if (finalLogrosJson != null) mostrarLogros(finalLogrosJson);
             });
         }).start();
@@ -280,6 +292,10 @@ public class PerfilActivity extends BaseActivity {
         progressNivel.setProgress(Math.max(0, Math.min(xpEnNivel, progressNivel.getMax())));
 
         txtProgresoDetalle.setText(xpEnNivel + " / " + xpParaSubir + " XP");
+    }
+
+    private void mostrarMonedas(JSONObject json) {
+        txtMonedas.setText("🪙 " + json.optInt("monedas", 0));
     }
 
     private void mostrarLogros(JSONObject logrosJson) {

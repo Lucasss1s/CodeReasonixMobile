@@ -39,6 +39,8 @@ public class DesafioDetalleActivity extends BaseActivity {
     private ImageView imgBoss;
     private RecyclerView recyclerPreguntas;
 
+    private boolean desafioCompletado = false;
+
     private final List<Pregunta> preguntas = new ArrayList<>();
     private PreguntaAdapter adapter;
     private Desafio desafio;
@@ -98,6 +100,19 @@ public class DesafioDetalleActivity extends BaseActivity {
         }
     }
 
+    private void mostrarModalDesafioCompletado() {
+        runOnUiThread(() -> {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("¡Desafío completado! 🎉")
+                    .setMessage("Has derrotado al boss y finalizado este desafío.")
+                    .setCancelable(false)
+                    .setPositiveButton("Volver a desafíos", (dialog, which) -> {
+                        finish(); 
+                    })
+                    .show();
+        });
+    }
+
     private void cargarDetalle() {
         new Thread(() -> {
             HttpURLConnection con = null;
@@ -124,6 +139,11 @@ public class DesafioDetalleActivity extends BaseActivity {
                     hpBar.setProgress(desafio.getHpRestante());
                     txtRecompensa.setText("XP: " + desafio.getRecompensaXp()
                             + " • Monedas: " + desafio.getRecompensaMoneda());
+
+                    if (desafio.getHpRestante() <= 0 && !desafioCompletado) {
+                        desafioCompletado = true;
+                        mostrarModalDesafioCompletado();
+                    }
 
                     String img = desafio.getImagenUrl();
                     if (img != null && !img.isEmpty()) {
@@ -205,6 +225,20 @@ public class DesafioDetalleActivity extends BaseActivity {
                         adapter.notifyDataSetChanged();
                     });
                 } else {
+
+                    if (desafio != null && desafio.getHpRestante() <= 0) {
+                        desafioCompletado = true;
+
+                        runOnUiThread(() -> {
+                            setEstadoBotonInscripcion(true);
+                            preguntas.clear();
+                            adapter.notifyDataSetChanged();
+                        });
+
+                        mostrarModalDesafioCompletado();
+                        return;
+                    }
+
                     final int idPart = participanteRow.optInt(
                             "id_participante",
                             participanteRow.optJSONObject("participante_desafio") != null
@@ -212,7 +246,9 @@ public class DesafioDetalleActivity extends BaseActivity {
                                     .optInt("id_participante", -1)
                                     : -1
                     );
+
                     runOnUiThread(() -> setEstadoBotonInscripcion(true));
+
                     if (idPart > 0) cargarPreguntasDeParticipante(idPart);
                 }
 

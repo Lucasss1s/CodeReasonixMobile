@@ -107,7 +107,7 @@ public class DesafioDetalleActivity extends BaseActivity {
                     .setMessage("Has derrotado al boss y finalizado este desafío.")
                     .setCancelable(false)
                     .setPositiveButton("Volver a desafíos", (dialog, which) -> {
-                        finish(); 
+                        finish();
                     })
                     .show();
         });

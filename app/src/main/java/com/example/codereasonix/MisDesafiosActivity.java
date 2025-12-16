@@ -296,7 +296,7 @@ public class MisDesafiosActivity extends BaseActivity {
                     JSONObject resp = new JSONObject(sb.toString());
                     message = resp.optString("message", message);
                     xp = resp.optInt("xp", 0);
-                    monedas = resp.optInt("moneda", 0);
+                    monedas = resp.optInt("monedas", 0);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -317,13 +317,25 @@ public class MisDesafiosActivity extends BaseActivity {
                         notifyItemChanged(adapterPos);
 
                         String extra = "";
-                        if (finalXp != null) extra += (extra.isEmpty() ? "" : " • ") + finalXp + " XP";
-                        if (finalMonedas != null) extra += (extra.isEmpty() ? "" : " • ") + finalMonedas + " monedas";
-                        Toast.makeText(MisDesafiosActivity.this,
-                                finalMessage + (extra.isEmpty() ? "" : " (" + extra + ")"),
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(MisDesafiosActivity.this, "No se pudo reclamar la recompensa", Toast.LENGTH_SHORT).show();
+                        if (finalXp != null && finalXp > 0)
+                            extra += finalXp + " XP";
+                        if (finalMonedas != null && finalMonedas > 0)
+                            extra += (extra.isEmpty() ? "" : " • ") + finalMonedas + " monedas";
+
+                        String toastMsg;
+
+                        if ((finalXp == null || finalXp == 0) && (finalMonedas == null || finalMonedas == 0)) {
+                            toastMsg = "❌ No recibiste recompensas porque no participaste en el desafío";
+                        } else if (finalXp < p.recompensaXp || finalMonedas < p.recompensaMoneda) {
+                            toastMsg = "⚠️ Recompensa parcial obtenida (" + extra + ")";
+                        } else {
+                            toastMsg = "🎉 Recompensa reclamada con éxito (" + extra + ")";
+                        }
+                        Toast.makeText(
+                                MisDesafiosActivity.this,
+                                toastMsg,
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
                 });
             }).start();

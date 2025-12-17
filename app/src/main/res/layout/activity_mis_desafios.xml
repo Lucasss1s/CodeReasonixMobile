@@ -35,6 +35,8 @@
             android:layout_height="wrap_content"
             android:text="Mis desafíos"
             android:textColor="#00bfa6"
+            android:gravity="center"
+            android:textAlignment="center"
             android:textSize="22sp"
             android:textStyle="bold"
             android:paddingBottom="8dp" />

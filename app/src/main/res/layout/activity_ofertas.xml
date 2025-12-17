@@ -38,7 +38,9 @@
             android:text="Ofertas laborales"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="#E5E7EB"
+            android:textColor="#00bfa6"
+            android:gravity="center"
+            android:textAlignment="center"
             android:paddingBottom="8dp" />
 
         <TextView
@@ -52,6 +54,18 @@
             android:visibility="gone"
             android:paddingTop="8dp"
             android:paddingBottom="8dp" />
+
+        <EditText
+            android:id="@+id/edtBuscarEmpresa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Buscar por empresa..."
+            android:background="#15152A"
+            android:padding="12dp"
+            android:textColor="#E5E7EB"
+            android:textColorHint="#6B7280"
+            android:inputType="text"
+            android:layout_marginBottom="8dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerOfertas"

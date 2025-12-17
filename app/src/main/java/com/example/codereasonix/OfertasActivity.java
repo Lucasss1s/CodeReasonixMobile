@@ -5,7 +5,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +32,10 @@ public class OfertasActivity extends BaseActivity {
     private RecyclerView recyclerOfertas;
     private ProgressBar progressOfertas;
     private TextView txtEmpty;
+    private EditText edtBuscarEmpresa;
 
     private final List<OfertaLaboral> listaOfertas = new ArrayList<>();
+    private final List<OfertaLaboral> listaFiltrada = new ArrayList<>();
     private OfertaAdapter adapter;
 
     @Override
@@ -39,22 +44,23 @@ public class OfertasActivity extends BaseActivity {
         setContentView(R.layout.activity_ofertas);
 
         enableImmersiveMode();
-
         setupTopBar();
         setupBottomNav();
 
         recyclerOfertas = findViewById(R.id.recyclerOfertas);
         progressOfertas = findViewById(R.id.progressOfertas);
         txtEmpty        = findViewById(R.id.txtEmptyOfertas);
+        edtBuscarEmpresa = findViewById(R.id.edtBuscarEmpresa);
 
         recyclerOfertas.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new OfertaAdapter(listaOfertas, oferta -> {
+        adapter = new OfertaAdapter(listaFiltrada, oferta -> {
             Intent i = new Intent(OfertasActivity.this, OfertaDetalleActivity.class);
             i.putExtra("id_oferta", oferta.getIdOferta());
             startActivity(i);
         });
         recyclerOfertas.setAdapter(adapter);
 
+        configurarBuscador();
         cargarOfertas();
     }
 
@@ -64,6 +70,32 @@ public class OfertasActivity extends BaseActivity {
         cargarOfertas();
     }
 
+    private void configurarBuscador() {
+        edtBuscarEmpresa.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filtrarPorEmpresa(s.toString());
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    private void filtrarPorEmpresa(String texto) {
+        String query = texto.toLowerCase().trim();
+
+        List<OfertaLaboral> filtradas = new ArrayList<>();
+
+        for (OfertaLaboral o : listaOfertas) {
+            if (o.getEmpresa() != null &&
+                    o.getEmpresa().getNombre() != null &&
+                    o.getEmpresa().getNombre().toLowerCase().contains(query)) {
+
+                filtradas.add(o);
+            }
+        }
+
+        adapter.actualizarLista(filtradas);
+    }
     private void cargarOfertas() {
         progressOfertas.setVisibility(View.VISIBLE);
         txtEmpty.setVisibility(View.GONE);
@@ -91,19 +123,22 @@ public class OfertasActivity extends BaseActivity {
 
                 JSONArray arr = new JSONArray(sb.toString());
                 listaOfertas.clear();
+                listaFiltrada.clear();
+
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
-                    listaOfertas.add(new OfertaLaboral(obj));
+                    OfertaLaboral oferta = new OfertaLaboral(obj);
+                    listaOfertas.add(oferta);
+                    listaFiltrada.add(oferta);
                 }
 
                 runOnUiThread(() -> {
                     progressOfertas.setVisibility(View.GONE);
-                    if (listaOfertas.isEmpty()) {
+
+                    if (listaFiltrada.isEmpty()) {
                         txtEmpty.setVisibility(View.VISIBLE);
                         txtEmpty.setText("No hay ofertas disponibles por el momento.");
-                        recyclerOfertas.setVisibility(View.GONE);
                     } else {
-                        txtEmpty.setVisibility(View.GONE);
                         recyclerOfertas.setVisibility(View.VISIBLE);
                         adapter.notifyDataSetChanged();
                     }
@@ -115,8 +150,7 @@ public class OfertasActivity extends BaseActivity {
                     progressOfertas.setVisibility(View.GONE);
                     txtEmpty.setVisibility(View.VISIBLE);
                     txtEmpty.setText("Error cargando ofertas laborales");
-                    Toast.makeText(OfertasActivity.this,
-                            "Error cargando ofertas", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error cargando ofertas", Toast.LENGTH_SHORT).show();
                 });
             } finally {
                 if (con != null) con.disconnect();

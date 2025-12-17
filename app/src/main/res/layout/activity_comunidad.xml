@@ -39,14 +39,16 @@
 
                 <TextView
                     android:id="@+id/txtTituloComunidad"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Comunidad"
-                    android:textColor="#E5E7EB"
+                    android:textColor="#00bfa6"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:textAlignment="center" />
 
                 <LinearLayout
                     android:id="@+id/layoutNuevaPublicacion"
@@ -85,6 +87,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Agregar imagen"
+                            android:backgroundTint="#00bfa6"
+                            android:textColor="#111"
                             android:textAllCaps="false"
                             android:textSize="12sp" />
 
@@ -94,6 +98,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:text="Publicar"
+                            android:backgroundTint="#00bfa6"
+                            android:textColor="#111"
                             android:textAllCaps="false" />
                     </LinearLayout>
 

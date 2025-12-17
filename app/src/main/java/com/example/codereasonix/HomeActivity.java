@@ -80,8 +80,20 @@ public class HomeActivity extends BaseActivity {
         final int VERDE = android.graphics.Color.parseColor("#00BFA6");
 
         if (spDificultad != null) {
-            final String[] labelsDif = {"Todas", "Fácil", "Intermedio", "Difícil", "Experto"};
-            final String[] valuesDif = {"", "facil", "intermedio", "dificil", "experto"};
+            final String[] labelsDif = {
+                    "Dificultad",
+                    "Fácil",
+                    "Intermedio",
+                    "Difícil",
+                    "Experto"
+            };
+            final String[] valuesDif = {
+                    "",
+                    "facil",
+                    "intermedio",
+                    "dificil",
+                    "experto"
+            };
 
             ArrayAdapter<String> difAdapter = new ArrayAdapter<>(
                     this,
@@ -109,8 +121,20 @@ public class HomeActivity extends BaseActivity {
         }
 
         if (spLenguaje != null) {
-            final String[] labelsLang = {"Todos", "Java", "Python", "JavaScript", "PHP"};
-            final String[] valuesLang = {"", "java", "python", "javascript", "php"};
+            final String[] labelsLang = {
+                    "Lenguaje",
+                    "Java",
+                    "Python",
+                    "JavaScript",
+                    "PHP"
+            };
+            final String[] valuesLang = {
+                    "",
+                    "java",
+                    "python",
+                    "javascript",
+                    "php"
+            };
 
             ArrayAdapter<String> langAdapter = new ArrayAdapter<>(
                     this,

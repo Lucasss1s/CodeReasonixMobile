@@ -33,6 +33,18 @@
             android:orientation="vertical"
             android:paddingHorizontal="24dp">
 
+            <TextView
+                android:id="@+id/txtTituloPantallaDesafios"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Desafíos"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#00bfa6"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:paddingBottom="8dp" />
+
             <LinearLayout
                 android:id="@+id/layoutFiltrosDesafios"
                 android:layout_width="match_parent"

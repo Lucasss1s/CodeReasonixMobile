@@ -72,6 +72,13 @@ public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder
         holder.itemView.setOnClickListener(v -> listener.onClick(o));
     }
 
+    public void actualizarLista(List<OfertaLaboral> nuevaLista) {
+        lista.clear();
+        lista.addAll(nuevaLista);
+        notifyDataSetChanged();
+    }
+
+
     @Override
     public int getItemCount() {
         return lista.size();

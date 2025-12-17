@@ -1,5 +1,6 @@
 package com.example.codereasonix.adapter;
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.ViewHo
     private final AppCompatActivity activity;
 
     private int expandedPosition = -1;
+    private final int COLOR_DISABLED = 0xFF3A3A3A;
 
     public PreguntaAdapter(List<Pregunta> lista, AppCompatActivity activity) {
         this.lista = lista != null ? lista : new ArrayList<>();
@@ -43,7 +45,7 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtPregunta, badgeEstado, txtSubtitulo;
+        TextView txtPregunta, badgeEstado, txtSubtitulo, txtRespuestaCorrecta;
         View expandArea;
         RadioGroup radioGroupOpciones;
         Button btnEnviar;
@@ -56,6 +58,13 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.ViewHo
             txtSubtitulo = v.findViewById(R.id.txtSubtitulo);
             radioGroupOpciones = v.findViewById(R.id.radioGroupOpciones);
             btnEnviar = v.findViewById(R.id.btnEnviar);
+
+            txtRespuestaCorrecta = new TextView(v.getContext());
+            txtRespuestaCorrecta.setTextColor(0xFF22C55E);
+            txtRespuestaCorrecta.setPadding(8, 16, 8, 0);
+            txtRespuestaCorrecta.setVisibility(View.GONE);
+
+            ((ViewGroup) expandArea).addView(txtRespuestaCorrecta);
         }
     }
 
@@ -85,23 +94,42 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.ViewHo
             holder.badgeEstado.setTextColor(0xFFFFD166);
         }
 
-        boolean isExpanded = (expandedPosition == position) && !p.isRespondida();
+        boolean isExpanded =
+                expandedPosition == position &&
+                        (!p.isRespondida() || !p.isCorrecta());
+
         holder.expandArea.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
 
         holder.txtSubtitulo.setText("Marcá la respuesta correcta");
 
         holder.radioGroupOpciones.removeAllViews();
-        if (!p.isRespondida()) {
+        holder.txtRespuestaCorrecta.setVisibility(View.GONE);
+
+        if (!p.isRespondida() || !p.isCorrecta()) {
+
             List<String> claves = new ArrayList<>(p.getOpciones().keySet());
             Collections.sort(claves);
+
             for (String key : claves) {
                 String texto = p.getOpciones().get(key);
                 RadioButton rb = new RadioButton(holder.itemView.getContext());
                 rb.setText(key + ". " + texto);
                 rb.setTag(key);
                 rb.setTextColor(0xFFEFEFEF);
+                rb.setEnabled(!p.isRespondida());
+
                 holder.radioGroupOpciones.addView(rb);
             }
+        }
+
+        if (p.isRespondida() && !p.isCorrecta()) {
+            String keyCorrecta = p.getRespuestaCorrecta();
+            String textoCorrecto = p.getOpciones().get(keyCorrecta);
+
+            holder.txtRespuestaCorrecta.setText(
+                    "✔ Respuesta correcta: " + keyCorrecta + ". " + textoCorrecto
+            );
+            holder.txtRespuestaCorrecta.setVisibility(View.VISIBLE);
         }
 
         holder.itemView.setOnClickListener(v -> {
@@ -109,18 +137,25 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.ViewHo
             if (adapterPos == RecyclerView.NO_POSITION) return;
 
             Pregunta actual = lista.get(adapterPos);
-            if (actual.isRespondida()) return;
+
+            if (actual.isRespondida() && actual.isCorrecta()) return;
 
             int old = expandedPosition;
-            if (expandedPosition == adapterPos) {
-                expandedPosition = -1;
-                notifyItemChanged(adapterPos);
-            } else {
-                expandedPosition = adapterPos;
-                notifyItemChanged(adapterPos);
-                if (old != -1) notifyItemChanged(old);
-            }
+            expandedPosition = expandedPosition == adapterPos ? -1 : adapterPos;
+
+            notifyItemChanged(adapterPos);
+            if (old != -1 && old != adapterPos) notifyItemChanged(old);
         });
+
+        if (p.isRespondida()) {
+            holder.btnEnviar.setText("Respuesta enviada");
+            holder.btnEnviar.setEnabled(false);
+            holder.btnEnviar.setBackgroundTintList(ColorStateList.valueOf(COLOR_DISABLED));
+            holder.btnEnviar.setTextColor(0xFFFFFFFF);
+        } else {
+            holder.btnEnviar.setText("Enviar");
+            holder.btnEnviar.setEnabled(true);
+        }
 
         holder.btnEnviar.setOnClickListener(v -> {
             int adapterPos = holder.getAdapterPosition();
@@ -134,6 +169,7 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.ViewHo
                 Toast.makeText(activity, "Seleccioná una opción", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             RadioButton rb = holder.itemView.findViewById(checkedId);
             String respuesta = (String) rb.getTag();
 
@@ -168,6 +204,7 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.ViewHo
                         String line;
                         while ((line = br.readLine()) != null) sb.append(line);
                     }
+
                     if (sb.length() > 0) {
                         JSONObject resp = new JSONObject(sb.toString());
                         esCorrecta = resp.optBoolean("correcta", false);
@@ -194,16 +231,8 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.ViewHo
                             fCorr.set(actual, finalCorrecta);
                         } catch (Exception ignored) {}
 
-                        int old = expandedPosition;
                         expandedPosition = -1;
-
-                        int now = holder.getAdapterPosition();
-                        if (now != RecyclerView.NO_POSITION) {
-                            notifyItemChanged(now);
-                        }
-                        if (old != -1 && old != now) {
-                            notifyItemChanged(old);
-                        }
+                        notifyItemChanged(holder.getAdapterPosition());
 
                         Toast.makeText(
                                 activity,
@@ -214,9 +243,6 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.ViewHo
                         if (activity instanceof com.example.codereasonix.DesafioDetalleActivity) {
                             ((com.example.codereasonix.DesafioDetalleActivity) activity).refrescarBoss();
                         }
-
-                    } else {
-                        Toast.makeText(activity, "Error al enviar la respuesta", Toast.LENGTH_SHORT).show();
                     }
                 });
             }).start();

@@ -9,6 +9,7 @@ public class Pregunta {
     private String texto;
     private HashMap<String, String> opciones = new HashMap<>();
     private boolean respondida, correcta;
+    private String respuestaCorrecta;
 
     public Pregunta(JSONObject obj) {
         idParticipantePregunta = obj.optInt("id_participante_pregunta");
@@ -23,6 +24,7 @@ public class Pregunta {
                     opciones.put(k, ops.optString(k));
                 }
             }
+            respuestaCorrecta = preg.optString("correcta", null);
         }
         respondida = obj.optBoolean("respondida");
         correcta = obj.optBoolean("correcta");
@@ -33,4 +35,7 @@ public class Pregunta {
     public HashMap<String, String> getOpciones() { return opciones; }
     public boolean isRespondida() { return respondida; }
     public boolean isCorrecta() { return correcta; }
+    public String getRespuestaCorrecta() {
+        return respuestaCorrecta;
+    }
 }
